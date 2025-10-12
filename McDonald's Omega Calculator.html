@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>McDonald's Omega Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 5px;
+        }
+        .credit {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            flex-basis: 120px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .input-group input[type="number"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .input-group button.remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            line-height: 1;
+        }
+        .input-group button.remove-btn:hover {
+            background-color: #c82333;
+        }
+        .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button.add-btn {
+            flex: 1;
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button.add-btn:hover {
+            background-color: #e0a800;
+        }
+        button.calculate-btn {
+            flex: 1;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button.calculate-btn:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 4px;
+            background-color: #e2f0e8;
+            font-size: 1.1em;
+            text-align: center;
+            font-weight: bold;
+            color: #155724;
+        }
+        #loadingsContainer {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 80px;
+            margin-bottom: 15px;
+            background-color: #fcfcfc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h2>McDonald's Omega Calculator</h2>
+    <div class="credit">by Chi-Ning (Nick) Chang</div>
+    <p>Enter your standardized factor loadings (values should be between 0 and 1). Add as many as needed.</p>
+    
+    <div id="loadingsContainer">
+        </div>
+
+    <div class="buttons-container">
+        <button class="add-btn" onclick="addLoadingInput()">Add Factor Loading</button>
+        <button class="calculate-btn" onclick="calculateOmega()">Calculate Omega</button>
+    </div>
+
+    <div class="result" id="result">
+        Omega: ---
+    </div>
+</div>
+
+<script>
+    let loadingCounter = 0; 
+    // Default values as requested: 0.8, 0.7, 0.6, 0.5
+    const defaultLoadings = ['0.8', '0.7', '0.6', '0.5']; 
+
+    // Function to add a new factor loading input field
+    function addLoadingInput(defaultValue = '') {
+        loadingCounter++;
+        const container = document.getElementById('loadingsContainer');
+        
+        const inputGroup = document.createElement('div');
+        inputGroup.classList.add('input-group');
+        inputGroup.id = `inputGroup-${loadingCounter}`;
+
+        const label = document.createElement('label');
+        label.setAttribute('for', `lambda-${loadingCounter}`);
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.id = `lambda-${loadingCounter}`;
+        input.className = 'lambda-input';
+        input.min = '0';
+        input.max = '1';
+        input.step = '0.01';
+        input.value = defaultValue;
+
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove-btn');
+        removeButton.textContent = 'Remove';
+        removeButton.onclick = function() {
+            container.removeChild(inputGroup);
+            updateLoadingLabels(); 
+            calculateOmega();
+        };
+
+        inputGroup.appendChild(label);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(removeButton);
+        container.appendChild(inputGroup);
+
+        input.addEventListener('input', calculateOmega); 
+        updateLoadingLabels();
+    }
+
+    // Function to update labels after an item is removed
+    function updateLoadingLabels() {
+        const inputs = document.querySelectorAll('.lambda-input');
+        for (let i = 0; i < inputs.length; i++) {
+            const label = inputs[i].previousElementSibling;
+            if (label && label.tagName === 'LABEL') {
+                label.textContent = `Loading ${i + 1}:`;
+            }
+        }
+        loadingCounter = inputs.length;
+    }
+
+    // Function to calculate Omega
+    function calculateOmega() {
+        const lambdaInputs = document.querySelectorAll('.lambda-input');
+        const loadings = [];
+        let isValid = true;
+
+        if (lambdaInputs.length < 2) {
+            document.getElementById('result').innerHTML = "Please add at least two factor loadings to calculate Omega.";
+            return;
+        }
+
+        lambdaInputs.forEach(input => {
+            const value = parseFloat(input.value);
+            // Check for valid number and range (0 to 1)
+            if (isNaN(value) || value < 0 || value > 1) {
+                isValid = false;
+            }
+            loadings.push(value);
+        });
+
+        if (!isValid) {
+            document.getElementById('result').innerHTML = "Please enter valid factor loadings (0 to 1) for all inputs.";
+            return;
+        }
+
+        // Omega Formula: omega = (sum(lambda))^2 / ( (sum(lambda))^2 + sum(theta) )
+        let sumLambda = 0;
+        let sumTheta = 0;
+
+        loadings.forEach(lambda => {
+            sumLambda += lambda;
+            sumTheta += (1 - (lambda * lambda));
+        });
+
+        const numerator = sumLambda * sumLambda;
+        const denominator = numerator + sumTheta;
+
+        const omega = numerator / denominator;
+        
+        document.getElementById('result').innerHTML = 
+            `Omega: ${omega.toFixed(4)}`;
+    }
+
+    // Initialize with default loadings on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        defaultLoadings.forEach(value => {
+            addLoadingInput(value);
+        });
+        calculateOmega(); // Calculate initially with default values
+    });
+</script>
+
+</body>
+</html>
