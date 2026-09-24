@@ -27,17 +27,13 @@ Factor loadings should be entered as values between **0 and 1**.
 
 For standardized items, the calculator uses:
 
-[
-\omega =
-\frac{(\sum_{i=1}^{k}\lambda_i)^2}
-{(\sum_{i=1}^{k}\lambda_i)^2+\sum_{i=1}^{k}(1-\lambda_i^2)}
-]
+**ω = (Σλᵢ)² / [(Σλᵢ)² + Σ(1 − λᵢ²)]**
 
 where:
 
-- `\lambda_i` = standardized factor loading for item `i`
-- `1-\lambda_i^2` = residual variance for item `i`
-- `k` = number of items
+- **λᵢ** = standardized factor loading for item *i*
+- **1 − λᵢ²** = residual variance for item *i*
+- **k** = number of items
 
 The calculator assumes standardized items and derives each item's residual variance from its standardized factor loading.
 
