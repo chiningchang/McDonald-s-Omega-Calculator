@@ -154,6 +154,21 @@
 </footer>
 
 <script>
+    const citationText = "Chang, C. N. (2026). McDonald's Omega Calculator [Web-based calculator]. https://chiningchang.github.io/McDonald-s-Omega-Calculator/";
+    const copyCitationBtn = document.getElementById('copyCitation');
+    if (copyCitationBtn) {
+        copyCitationBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(citationText);
+                copyCitationBtn.textContent = 'Copied!';
+                setTimeout(() => copyCitationBtn.textContent = 'Copy citation', 1500);
+            } catch (e) {
+                copyCitationBtn.textContent = 'Copy failed';
+                setTimeout(() => copyCitationBtn.textContent = 'Copy citation', 1500);
+            }
+        });
+    }
+
     let loadingCounter = 0; 
     // Default values as requested: 0.8, 0.7, 0.6, 0.5
     const defaultLoadings = ['0.8', '0.7', '0.6', '0.5']; 
@@ -174,7 +189,7 @@
         input.type = 'number';
         input.id = `lambda-${loadingCounter}`;
         input.className = 'lambda-input';
-        input.min = '0';
+        input.min = '-1';
         input.max = '1';
         input.step = '0.01';
         input.value = defaultValue;
@@ -222,17 +237,22 @@
 
         lambdaInputs.forEach(input => {
             const value = parseFloat(input.value);
-            // Check for valid number and range (0 to 1)
-            if (isNaN(value) || value < 0 || value > 1) {
+            // Check for valid number and range (-1 to 1)
+            if (isNaN(value) || value < -1 || value > 1) {
                 isValid = false;
             }
             loadings.push(value);
         });
 
         if (!isValid) {
-            document.getElementById('result').innerHTML = "Please enter valid factor loadings (0 to 1) for all inputs.";
+            document.getElementById('result').innerHTML = "Please enter valid standardized factor loadings (-1 to 1) for all inputs.";
             return;
         }
+
+        // Warn when positive and negative loadings are mixed
+        const hasPositive = loadings.some(lambda => lambda > 0);
+        const hasNegative = loadings.some(lambda => lambda < 0);
+        const mixedSigns = hasPositive && hasNegative;
 
         // Omega Formula: omega = (sum(lambda))^2 / ( (sum(lambda))^2 + sum(theta) )
         let sumLambda = 0;
@@ -248,8 +268,9 @@
 
         const omega = numerator / denominator;
         
-        document.getElementById('result').innerHTML = 
-            `Omega: ${omega.toFixed(4)}`;
+        document.getElementById('result').innerHTML =
+            `Omega: ${omega.toFixed(4)}` +
+            (mixedSigns ? '<div style="margin-top:10px;font-size:0.85em;font-weight:normal;color:#856404;">⚠️ Mixed positive and negative factor loadings detected. Please verify item coding and factor orientation before interpreting omega.</div>' : '');
     }
 
     // Initialize with default loadings on page load
