@@ -270,7 +270,7 @@
         
         document.getElementById('result').innerHTML =
             `Omega: ${omega.toFixed(4)}` +
-            (mixedSigns ? '<div style="margin-top:10px;font-size:0.85em;font-weight:normal;color:#856404;">⚠️ Mixed positive and negative factor loadings detected. Please verify item coding and factor orientation before interpreting omega.</div>' : '');
+            (mixedSigns ? '<div style="margin-top:10px;font-size:0.85em;font-weight:normal;color:#856404;">⚠️ Mixed positive and negative factor loadings detected. Negative loadings should not automatically be converted to positive values. Check item coding, reverse-scored items, and the measurement model before interpreting omega.</div>' : '');
     }
 
     // Initialize with default loadings on page load
