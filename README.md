@@ -21,7 +21,6 @@ The calculator allows users to:
 - Automatically calculate McDonald's omega
 - Obtain the result directly in the browser
 
-Factor loadings should be entered as values between **0 and 1**.
 
 ## 🧮 Calculation
 
@@ -78,11 +77,15 @@ The calculator may be useful for:
 - Instructors teaching psychometrics, measurement, or quantitative research methods
 - Anyone who needs a quick omega calculation from standardized factor loadings
 
-## 👨‍🏫 About the Creator
+## 👨‍🏫 Author
 
-**Chi-Ning (Nick) Chang, Ph.D.**  
+**Dr. Chi-Ning (Nick) Chang**  
 Associate Professor  
 Virginia Commonwealth University
+
+- GitHub: [chiningchang](https://github.com/chiningchang)
+- Project repository: [McDonald's Omega Calculator](https://github.com/chiningchang/McDonald-s-Omega-Calculator)
+- Calculator: [Launch the web app](https://chiningchang.github.io/McDonald-s-Omega-Calculator/)
 
 Dr. Chang's work focuses on artificial intelligence, machine learning, quantitative research methods, and their applications in education.
 
@@ -90,7 +93,19 @@ Dr. Chang's work focuses on artificial intelligence, machine learning, quantitat
 
 If you use the calculator in teaching, research, presentations, or other scholarly work, please cite it as:
 
-> Chang, C. N. (2026). *McDonald's Omega Calculator* [Web-based statistical calculator]. GitHub. https://chiningchang.github.io/McDonald-s-Omega-Calculator/
+> Chang, C. N. (2026). *McDonald's Omega Calculator* [Web-based calculator]. https://chiningchang.github.io/McDonald-s-Omega-Calculator/
+
+**BibTeX**
+
+```bibtex
+@misc{chang2026omega,
+  author = {Chang, Chi-Ning},
+  title = {McDonald's Omega Calculator},
+  year = {2026},
+  note = {Web-based calculator},
+  url = {https://chiningchang.github.io/McDonald-s-Omega-Calculator/}
+}
+```
 
 A DOI-based citation may be added in a future release.
 
